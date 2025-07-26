@@ -48,6 +48,10 @@ class _HomeUIState extends State<HomeUI> {
   SMITrigger? triggerSuccess;
   SMITrigger? triggerFail;
 
+  // New variables for login status
+  bool isLoginSuccess = false; // To track the login state
+  bool isContainerVisible = false; // To control the visibility of the result container
+
   @override
   void initState() {
     emailFocusNode.addListener(() {
@@ -87,6 +91,27 @@ class _HomeUIState extends State<HomeUI> {
                 context,
               ).textTheme.headlineMedium?.copyWith(color: AppColor.white),
               textAlign: TextAlign.center,
+            ),
+            SizedBox(height: 20,),
+            Visibility(
+              visible: isContainerVisible,
+              child: Container(
+                height: 50,
+                width: double.infinity,
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: isLoginSuccess ? AppColor.success[700] : AppColor.danger[500] ,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  isLoginSuccess ? "Login Successful" : "Login Failed",
+                  style: const TextStyle(
+                    color: AppColor.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
             SizedBox(
               height: 300,
@@ -181,6 +206,12 @@ class _HomeUIState extends State<HomeUI> {
         email.toLowerCase() == validEmail.toLowerCase() &&
             password == validPassword;
 
+    // Update the login result and show the container
+    setState(() {
+      isLoginSuccess = valid;
+      isContainerVisible = true;
+    });
+
     if (valid) {
       triggerSuccess?.change(true);
     } else {
@@ -188,3 +219,4 @@ class _HomeUIState extends State<HomeUI> {
     }
   }
 }
+
